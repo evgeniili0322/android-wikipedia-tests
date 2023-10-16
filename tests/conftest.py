@@ -10,7 +10,7 @@ from appium import webdriver
 from selene import browser, support
 from dotenv import load_dotenv
 
-from wikipedia_mobile_tests.utils import attach
+from mobile_tests.utils import attach
 
 
 class Config(pydantic_settings.BaseSettings):
