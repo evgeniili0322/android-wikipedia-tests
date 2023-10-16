@@ -2,7 +2,6 @@ import pytest
 import os
 import allure
 import allure_commons
-import pydantic_settings
 
 from appium.options.ios import XCUITestOptions
 from appium.options.android import UiAutomator2Options
@@ -10,16 +9,8 @@ from appium import webdriver
 from selene import browser, support
 from dotenv import load_dotenv
 
+from config import config
 from mobile_tests.utils import attach
-
-
-class Config(pydantic_settings.BaseSettings):
-    app_id: str = 'bs://sample.app'
-    browser_url: str = 'http://hub.browserstack.com/wd/hub'
-    timeout: float = 10.0
-
-
-config = Config()
 
 
 @pytest.fixture(scope='session', autouse=True)
