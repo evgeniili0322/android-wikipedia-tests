@@ -1,12 +1,16 @@
 import pytest
 import os
+import allure
+import allure_commons
 import pydantic_settings
-from appium.options.ios import XCUITestOptions
-from appium import webdriver
 
-from selene import browser
+from appium.options.ios import XCUITestOptions
 from appium.options.android import UiAutomator2Options
+from appium import webdriver
+from selene import browser, support
 from dotenv import load_dotenv
+
+from wikipedia_mobile_tests.utils import attach
 
 
 class Config(pydantic_settings.BaseSettings):
@@ -61,15 +65,31 @@ def mobile_management(request):
                 "sessionName": "BStack first_test"
             }
         })
+    with allure.step('Init app session'):
+        browser.config.driver = webdriver.Remote(
+            "http://hub.browserstack.com/wd/hub",
+            options=options
+        )
 
-    browser.config.driver = webdriver.Remote("http://hub.browserstack.com/wd/hub", options=options)
     browser.config.timeout = config.timeout
 
-    yield
+    browser.config._wait_decorator = support._logging.wait_with(
+        context=allure_commons._allure.StepContext
+    )
 
-    browser.quit()
+    yield browser
+
+    attach.add_screenshot(browser)
+    attach.add_xml(browser)
+
+    session_id = browser.driver.session_id
+
+    with allure.step('Tear down app session'):
+        browser.quit()
+
+    attach.attach_bstack_video(session_id, user_name, access_key)
 
 
+# Device name parameters
 ios = pytest.mark.parametrize('mobile_management', ['IOS'], indirect=True)
-
 android = pytest.mark.parametrize('mobile_management', ['Android'], indirect=True)

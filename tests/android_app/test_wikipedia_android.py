@@ -26,6 +26,6 @@ def test_open_article_page():
     with allure.step('Open article page'):
         browser.all((AppiumBy.ID, 'org.wikipedia.alpha:id/page_list_item_title')).first.click()
 
-    with allure.step('Assert opened article'):
+    with allure.step('Verify opened article'):
         browser.element((AppiumBy.ID, 'org.wikipedia.alpha:id/view_wiki_error_text')).should(
             have.text('An error occurred'))
