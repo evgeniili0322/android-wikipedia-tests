@@ -14,7 +14,7 @@ from mobile_tests.utils import attach
 
 
 @pytest.fixture(scope='session', autouse=True)
-def load_end():
+def load_env():
     load_dotenv()
 
 
@@ -56,6 +56,7 @@ def mobile_management(request):
                 "sessionName": "BStack first_test"
             }
         })
+
     with allure.step('Init app session'):
         browser.config.driver = webdriver.Remote(
             config.browser_url,
