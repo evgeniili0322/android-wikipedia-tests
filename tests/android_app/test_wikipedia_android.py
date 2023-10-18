@@ -2,7 +2,6 @@ import allure
 
 from appium.webdriver.common.appiumby import AppiumBy
 from selene import browser, have
-from tests.conftest import android
 
 pytestmark = android
 
