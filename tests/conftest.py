@@ -8,7 +8,7 @@ from appium import webdriver
 from selene import browser, support
 
 from config import remote_url, driver_options, config
-from mobile_tests.utils import attach
+from android_wikipedia_tests.utils import attach
 
 
 @pytest.fixture(scope='function', autouse=True)
