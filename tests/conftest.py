@@ -1,49 +1,22 @@
-import pytest
 import os
+
+import pytest
 import allure
 import allure_commons
 
-from appium.options.android import UiAutomator2Options
 from appium import webdriver
 from selene import browser, support
-from dotenv import load_dotenv
 
-from config import config
+from config import remote_url, driver_options, config
 from mobile_tests.utils import attach
 
 
-@pytest.fixture(scope='session', autouse=True)
-def load_env():
-    load_dotenv()
-
-
 @pytest.fixture(scope='function', autouse=True)
-def mobile_management(request):
-    user_name = os.getenv('USER_NAME')
-    access_key = os.getenv('ACCESS_KEY')
-
-    options = UiAutomator2Options().load_capabilities({
-        "platformName": "android",
-        "platformVersion": "9.0",
-        "deviceName": "Google Pixel 3",
-
-        "app": config.app_id,
-
-        'bstack:options': {
-            "projectName": "First Python project",
-            "buildName": "browserstack-build-1",
-            "sessionName": "BStack first_test",
-
-            "userName": user_name,
-            "accessKey": access_key
-        }
-    })
-
+def mobile_management():
     with allure.step('Init app session'):
         browser.config.driver = webdriver.Remote(
-            config.browser_url,
-            options=options
-        )
+            remote_url,
+            options=driver_options())
 
     browser.config.timeout = config.timeout
 
@@ -61,5 +34,5 @@ def mobile_management(request):
     with allure.step('Tear down app session'):
         browser.quit()
 
-    attach.attach_bstack_video(session_id, user_name, access_key)
-
+    if config.context == 'bstack':
+        attach.attach_bstack_video(session_id, os.getenv('USER_NAME'), os.getenv('ACCESS_KEY'))
